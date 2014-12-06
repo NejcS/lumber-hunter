@@ -1,36 +1,39 @@
-<html>
-	<head>
-		<title>My first Three.js app</title>
-		<style>
-			body { margin: 0; }
-			canvas { width: 100%; height: 100% }
-		</style>
-	</head>
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Lumber hunter</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel=stylesheet href="css/base.css"/>
+</head>
 	<body>
-		<script src="js/three.min.js"></script>
-		<script>
-			var scene = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-			var renderer = new THREE.WebGLRenderer();
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
+	<script src="js/three.min.js"></script>
+	<!--
+		Detector.js mal poenostav postavljanje okolja.
+	-->
+	<script src="js/Detector.js"></script>
+	<!--
+		Stats.js poskrbi za prikaz statistik o performancu v tistem mejhnem okenčku spodi levo.
+	-->
+	<script src="js/Stats.js"></script>
+	<!--
+		Tega verjetno ne bova rabla, ker bova uporabljala mal drugačno kamero.
+	-->
+	<script src="js/OrbitControls.js"></script>
+	<!-- 
+		Močno poenostavi branje key pressov pa še ohranja stanje key pressa tko, da se ti ni treba obešat na evente,
+		ker bi blo to lahko mal problematično v najinem event loopu.
+	-->
+	<script src="js/THREEx.KeyboardState.js"></script>
+	<!--
+		FullScreen.js omogoča simpl full screen mode, WindowResize pa poskrbi, da se renderer posodobi,
+		ko se spremeni window size (npr., ko greš v full screen mode)
+	-->
+	<script src="js/THREEx.FullScreen.js"></script>
+	<script src="js/THREEx.WindowResize.js"></script>
 
-			var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-			var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-			var sphere = new THREE.Mesh( geometry, material );
-			scene.add( sphere );
-
-			camera.position.z = 5;
-
-			function render() {
-				requestAnimationFrame( render );
-				sphere.rotation.x += 0.1;
-				sphere.rotation.y += 0.1;
-				renderer.render( scene, camera );
-			}
-
-			render();
-		</script>
-	</body>
+	<div id="ThreeJS" style="z-index: 1; position: absolute; left:0px; top:0px"></div>
+	<script src="js/main.js"></script>
+</body>
 </html>
