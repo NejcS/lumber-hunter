@@ -11,12 +11,18 @@ THREE.PointerLockControls = function ( camera ) {
 	yawObject.position.y = 10;
 	yawObject.add( pitchObject );
 
+	var playerMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+	var playerGeometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
+	var player = new Physijs.CapsuleMesh( playerGeometry );
+
+	scene.add(player);
+	//yawObject.add(player);
+
 	var moveForward = false;
 	var moveBackward = false;
 	var moveLeft = false;
 	var moveRight = false;
 
-	var isOnObject = false;
 	var canJump = false;
 
 	var prevTime = performance.now();
@@ -34,7 +40,8 @@ THREE.PointerLockControls = function ( camera ) {
 
 		yawObject.rotation.y -= movementX * 0.002;
 		pitchObject.rotation.x -= movementY * 0.002;
-
+		player.rotation.y -= movementX * 0.002;
+		
 		// prevent the camera from turning upside down
 		pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
 
@@ -64,10 +71,9 @@ THREE.PointerLockControls = function ( camera ) {
 				break;
 
 			case 32: // space
-				if ( canJump === true ) velocity.y += 350;
+				if ( canJump === true ) velocity.y += 300;
 				canJump = false;
 				break;
-
 		}
 
 	};
@@ -112,11 +118,8 @@ THREE.PointerLockControls = function ( camera ) {
 
 	};
 
-	this.isOnObject = function ( boolean ) {
-
-		isOnObject = boolean;
-		canJump = boolean;
-
+	this.getPlayer = function() {
+		return player;
 	};
 
 	this.getDirection = function() {
@@ -155,12 +158,10 @@ THREE.PointerLockControls = function ( camera ) {
 
 		if ( moveLeft ) velocity.x -= 400.0 * delta;
 		if ( moveRight ) velocity.x += 400.0 * delta;
+		
 
-		if ( isOnObject === true ) {
-
-			velocity.y = Math.max( 0, velocity.y );
-
-		}
+		player.translateX( velocity.x * delta );
+		player.translateZ( velocity.z * delta );
 
 		yawObject.translateX( velocity.x * delta );
 		yawObject.translateY( velocity.y * delta ); 
@@ -172,7 +173,6 @@ THREE.PointerLockControls = function ( camera ) {
 			yawObject.position.y = 10;
 
 			canJump = true;
-
 		}
 
 		prevTime = time;

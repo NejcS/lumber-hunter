@@ -105,6 +105,7 @@ function init() {
 	ground_material.map.repeat.set( 10, 10 );
 
 	ground_geometry = new THREE.PlaneGeometry( 1000, 1000, 50, 50 );
+
 	ground_geometry.computeFaceNormals();
 	ground_geometry.computeVertexNormals();
 
