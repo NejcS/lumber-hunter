@@ -11,18 +11,19 @@ THREE.PointerLockControls = function ( camera ) {
 	yawObject.add( pitchObject );
 
 	var friction = 1;
-	var restitution = 1;
-	var mass = 100;
+	var restitution = 0;
+	var mass = 10;
 	var playerMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
 	// var playerGeometry = new THREE.CylinderGeometry( 5, 5, 10, 32 );
 	var playerGeometry = new THREE.SphereGeometry(7, 320, 320);
-	var physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xffff00}), friction, restitution);
+	var physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({}), friction, restitution);
+	physMaterial.opacity = 0.0;
 	// var player = new Physijs.CapsuleMesh( playerGeometry, physMaterial, mass );
 	var player = new Physijs.SphereMesh(playerGeometry, physMaterial, mass);
     // player.__dirtyPosition = true;
     // player.__dirtyRotation = true;
 
-	player.position.set( 10, 50, 0 );
+	player.position.set( 10, 8, 0 );
 
 	scene.add(player);
 
@@ -51,6 +52,10 @@ THREE.PointerLockControls = function ( camera ) {
 		yawObject.rotation.y -= movementX * 0.002;
 		pitchObject.rotation.x -= movementY * 0.002;
 		player.rotation.y -= movementX * 0.002;
+		
+		var yAxis = new THREE.Vector3(0,1,0);
+		rotateAroundObjectAxis(player, yAxis, player.rotation.y);
+		
 
 		// prevent the camera from turning upside down
 		pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
@@ -84,7 +89,7 @@ THREE.PointerLockControls = function ( camera ) {
 				break;
 
 			case 32: // space
-				if ( canJump === true ) velocity.y += 300;
+				if ( canJump === true ) velocity.y += 1500;
 				canJump = false;
 				break;
 		}
@@ -166,7 +171,7 @@ THREE.PointerLockControls = function ( camera ) {
 
 		velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
 		player.rotation.y = yawObject.rotation.y;
-		console.log(yawObject.rotation.y, player.rotation.y);
+		player.rotation = yawObject.rotation;
 
 		if ( moveForward ) velocity.z -= 400.0 * delta;
 		if ( moveBackward ) velocity.z += 400.0 * delta;
@@ -181,8 +186,16 @@ THREE.PointerLockControls = function ( camera ) {
 		// player.translateZ( velocity.z * delta );
 
 		// player.position.set(posX, posY, 1);
+		if(player.getLinearVelocity.y > 0.01){
+			player.setLinearVelocity(velocity.x, player.getLinearVelocity.y, velocity.z);	
+		}else{
+			var vel = new THREE.Vector3(velocity.x * Math.cos(player.rotation.y), 0, velocity.z);
+			// console.log(velocity.x * Math.cos(player.rotation.y), 0, velocity.z * Math.sin(player.rotation.));
+			player.setLinearVelocity(vel);
+		}
 
-		player.setLinearVelocity(velocity);
+		// player.matrixAutoUpdate = false;
+		// console.log(player.matrix.rotation);
 
 		// player.applyCentralImpulse( new THREE.Vector3(silaPremik.x, silaPremik.y, velocity.z) );
 
@@ -194,6 +207,10 @@ THREE.PointerLockControls = function ( camera ) {
 		yawObject.position.y = player.position.y;
 		yawObject.position.z = player.position.z;
 
+		// console.log(player.position.y, yawObject.position.y);
+		if(yawObject.position.y > 10) {
+			canJump = false;
+		}
 		if ( yawObject.position.y < 10 ) {
 
 			velocity.y = 0;
