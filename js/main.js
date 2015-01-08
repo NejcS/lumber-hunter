@@ -7,8 +7,10 @@ var objects = [];
 var cube;
 var MovingCube;
 
+var car = {};
+
 Physijs.scripts.worker = 'js/physijs_worker.js';
-Physijs.scripts.ammo = 'js/ammo.js';
+Physijs.scripts.ammo = 'ammo.js';
 
 var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
@@ -69,6 +71,8 @@ function init() {
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	
 	scene = new Physijs.Scene({ fixedTimeStep: 1 / 120 });
+	scene.setGravity(new THREE.Vector3(0, -30, 0));
+
 		
 	controls = new THREE.PointerLockControls( camera );
 	scene.add( controls.getObject() );
@@ -106,6 +110,12 @@ function init() {
 
 	ground_geometry = new THREE.PlaneGeometry( 1000, 1000, 50, 50 );
 
+	for (var i = 0; i < ground_geometry.vertices.length; i++ ) {
+		if (i % 40 == 0) {
+			ground_geometry.vertices[i].z = (Math.random() * 30) + 5;
+		}
+	}
+
 	ground_geometry.computeFaceNormals();
 	ground_geometry.computeVertexNormals();
 
@@ -123,12 +133,15 @@ function init() {
 	scene.add( ground );
 	
 	scene.fog = new THREE.FogExp2( 0x999999, 0.00025 );
+
+	
 }
 
 function animate() {
     requestAnimationFrame( animate );
 	render();
 	update();
+	scene.simulate();
 	controls.update();
 }
 
