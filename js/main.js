@@ -99,6 +99,10 @@ function init() {
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 10, 10 );
 */
+
+
+
+
 	ground_material = Physijs.createMaterial(
 			new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture( 'images/grass1.jpg' ) }),
 			.6, // high friction
@@ -112,7 +116,7 @@ function init() {
 
 	for (var i = 0; i < ground_geometry.vertices.length; i++ ) {
 		if (i % 40 == 0) {
-			ground_geometry.vertices[i].z = (Math.random() * 30) + 5;
+			ground_geometry.vertices[i].z = (Math.random() * 5) + 5;
 		}
 	}
 

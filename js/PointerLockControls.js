@@ -10,16 +10,16 @@ THREE.PointerLockControls = function ( camera ) {
 	yawObject.position.y = 10;
 	yawObject.add( pitchObject );
 
-	var friction = 1;
+	var friction = 100;
 	var restitution = 0;
 	var mass = 10;
 	var playerMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-	// var playerGeometry = new THREE.CylinderGeometry( 5, 5, 10, 32 );
-	var playerGeometry = new THREE.SphereGeometry(7, 320, 320);
+	var playerGeometry = new THREE.CylinderGeometry( 5, 5, 10, 32 );
+	// var playerGeometry = new THREE.SphereGeometry(7, 320, 320);
 	var physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({}), friction, restitution);
-	physMaterial.opacity = 0.0;
-	// var player = new Physijs.CapsuleMesh( playerGeometry, physMaterial, mass );
-	var player = new Physijs.SphereMesh(playerGeometry, physMaterial, mass);
+	physMaterial.visible = false;
+	var player = new Physijs.CapsuleMesh( playerGeometry, physMaterial, mass );
+	// var player = new Physijs.SphereMesh(playerGeometry, physMaterial, mass);
     // player.__dirtyPosition = true;
     // player.__dirtyRotation = true;
 
@@ -169,7 +169,7 @@ THREE.PointerLockControls = function ( camera ) {
 		velocity.x -= velocity.x * 10.0 * delta;
 		velocity.z -= velocity.z * 10.0 * delta;
 
-		velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+		velocity.y -= 9.8 * 50.0 * delta; // 100.0 = mass
 		player.rotation.y = yawObject.rotation.y;
 		player.rotation = yawObject.rotation;
 
