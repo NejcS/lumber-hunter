@@ -10,7 +10,7 @@ THREE.PointerLockControls = function ( camera ) {
 	yawObject.position.y = 10;
 	yawObject.add( pitchObject );
 
-	var friction = 100;
+	var friction = 1;
 	var restitution = 0;
 	var mass = 10;
 	var playerMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
@@ -89,7 +89,11 @@ THREE.PointerLockControls = function ( camera ) {
 				break;
 
 			case 32: // space
-				if ( canJump === true ) velocity.y += 1500;
+				// if ( canJump === true ) velocity.y += 1500;
+				if (canJump == true) {
+					var vektorJump = new THREE.Vector3(0,5000,0);
+					player.applyCentralImpulse(vektorJump);
+				}
 				canJump = false;
 				break;
 		}
@@ -169,7 +173,7 @@ THREE.PointerLockControls = function ( camera ) {
 		velocity.x -= velocity.x * 10.0 * delta;
 		velocity.z -= velocity.z * 10.0 * delta;
 
-		velocity.y -= 9.8 * 50.0 * delta; // 100.0 = mass
+		// velocity.y -= 9.8 * 50.0 * delta; // 100.0 = mass
 		player.rotation.y = yawObject.rotation.y;
 		player.rotation = yawObject.rotation;
 
@@ -232,7 +236,7 @@ THREE.PointerLockControls = function ( camera ) {
 		if(player.getLinearVelocity.y > 0.01){
 			player.setLinearVelocity(velocity.x, player.getLinearVelocity.y, velocity.z);	
 		}else{
-			var vel = new THREE.Vector3(velocity.x * Math.sin(player.rotation.y + kot), velocity.y, velocity.z * Math.cos(player.rotation.y + kot));
+			var vel = new THREE.Vector3(velocity.x * Math.sin(player.rotation.y + kot), 0, velocity.z * Math.cos(player.rotation.y + kot));
 			console.log("velx: "+velocity.x * Math.sin(player.rotation.y + kot) +
 				"vely: " + velocity.y +
 				"velz: " +  velocity.z * Math.cos(player.rotation.y - kot))
