@@ -1,5 +1,20 @@
 THREE.PointerLockControls = function ( camera ) {
 
+	// Helper functions
+
+	var round = function(number) {
+		return Math.round(number * 100) / 100;
+	}
+
+	var logVector3 = function(vec) {
+		console.log("x: " + round(vec.x) + " y: " + round(vec.y) + " z: " + round(vec.z));
+	}
+
+	var logVector2 = function(x, z) {
+		console.log("x: " + round(x) + " z: " + round(z));
+	}
+
+
 	var scope = this;
 	camera.rotation.set( 0, 0, 0 );
 
@@ -76,7 +91,8 @@ THREE.PointerLockControls = function ( camera ) {
 
 			case 37: // left
 			case 65: // a
-				moveLeft = true; break;
+				moveLeft = true;
+				break;
 
 			case 40: // down
 			case 83: // s
@@ -166,43 +182,35 @@ THREE.PointerLockControls = function ( camera ) {
 		var time = performance.now();
 		var delta = ( time - prevTime ) / 1000;
 
+		// Zaradi tega se upočasni
 		velocity.x -= velocity.x * 10.0 * delta;
 		velocity.z -= velocity.z * 10.0 * delta;
 
+		// Zakaj je to tuki? Pomoje lahko pustiva da Physi.js zračuna padanje al kaj?
 		velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+		
+
 		player.rotation.y = yawObject.rotation.y;
-		player.rotation = yawObject.rotation;
 
-		if(moveForward || moveLeft){
-			velocity.z -= 400.0 * delta;
-			velocity.x -= 400.0 * delta;
-		} else if(moveBackward || moveRight){
-			velocity.z += 400.0 * delta;
-			velocity.x += 400.0 * delta;
-		}
-		// var posX = velocity.x * delta;
-		// var posY = velocity.y * delta;
+		if ( moveForward ) velocity.z -= 400.0 * delta;
+		if ( moveBackward ) velocity.z += 400.0 * delta;
 
-		// player.translateX( velocity.x * delta );
-		// player.translateZ( velocity.z * delta );
+		if ( moveLeft ) velocity.x -= 400.0 * delta;
+		if ( moveRight ) velocity.x += 400.0 * delta;
 
-		// player.position.set(posX, posY, 1);
-		if(player.getLinearVelocity.y > 0.01){
+		if ( player.getLinearVelocity.y > 0.01 ){
 			player.setLinearVelocity(velocity.x, player.getLinearVelocity.y, velocity.z);	
-		}else{
+		} else {
+			// to se skor 100% pravilno računa
 			var vel = new THREE.Vector3(velocity.x * Math.sin(player.rotation.y), 0, velocity.z * Math.cos(player.rotation.y));
-			// console.log(velocity.x * Math.cos(player.rotation.y), 0, velocity.z * Math.sin(player.rotation.));
+			
+			//logVector2(vel.x, vel.z);
 			player.setLinearVelocity(vel);
 		}
 
 		// player.matrixAutoUpdate = false;
-		console.log(player.rotation.y);
 
 		// player.applyCentralImpulse( new THREE.Vector3(silaPremik.x, silaPremik.y, velocity.z) );
-
-		// yawObject.translateX( velocity.x * delta );
-		// yawObject.translateY( velocity.y * delta ); 
-		// yawObject.translateZ( velocity.z * delta );
 
 		yawObject.position.x = player.position.x;
 		yawObject.position.y = player.position.y;
