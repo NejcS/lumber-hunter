@@ -53,8 +53,8 @@ THREE.PointerLockControls = function ( camera ) {
 		pitchObject.rotation.x -= movementY * 0.002;
 		player.rotation.y -= movementX * 0.002;
 		
-		var yAxis = new THREE.Vector3(0,1,0);
-		rotateAroundObjectAxis(player, yAxis, player.rotation.y);
+		// var yAxis = new THREE.Vector3(0,1,0);
+		// rotateAroundObjectAxis(player, yAxis, player.rotation.y);
 		
 
 		// prevent the camera from turning upside down
@@ -173,13 +173,55 @@ THREE.PointerLockControls = function ( camera ) {
 		player.rotation.y = yawObject.rotation.y;
 		player.rotation = yawObject.rotation;
 
-		if(moveForward || moveLeft){
+		// if(moveForward){
+			// velocity.z -= 400.0 * delta;
+			// velocity.x -= 400.0 * delta;
+		// }if(moveBackward){
+		// 	velocity.z += 400.0 * delta;
+		// 	velocity.x += 400.0 * delta;
+		// }if(moveRight){
+		// 	velocity.z -= 400.0 * delta; 
+		// 	velocity.x += 400.0 * delta; 
+		// }if(moveLeft){
+		// 	velocity.z += 400.0 * delta; 
+		// 	velocity.x -= 400.0 * delta; 
+		// }
+
+		var kot = 0;
+		if(moveForward || moveRight || moveBackward || moveLeft){
 			velocity.z -= 400.0 * delta;
 			velocity.x -= 400.0 * delta;
-		} else if(moveBackward || moveRight){
-			velocity.z += 400.0 * delta;
-			velocity.x += 400.0 * delta;
+
 		}
+
+		if(moveForward && moveRight){
+			kot -= 45 * Math.PI/180;
+		}else 
+		if(moveForward && moveLeft){
+			kot += 45 * Math.PI/180;
+		}else
+		if(moveBackward && moveRight){
+			kot -= 135 * Math.PI/180;
+		}else
+		if(moveBackward && moveLeft){
+			kot += 135 * Math.PI/180;
+		}//---------
+		else
+		if(moveRight){
+			kot -= 90 * Math.PI/180;
+		}else
+		if(moveLeft){
+			kot += 90 * Math.PI/180;
+		}else
+		if(moveForward){
+			kot += 0 * Math.PI/180;
+		}else
+		if(moveBackward){
+			kot += 180 * Math.PI/180;
+		}
+
+		// console.log("kot: " + kot);
+
 		// var posX = velocity.x * delta;
 		// var posY = velocity.y * delta;
 
@@ -190,7 +232,10 @@ THREE.PointerLockControls = function ( camera ) {
 		if(player.getLinearVelocity.y > 0.01){
 			player.setLinearVelocity(velocity.x, player.getLinearVelocity.y, velocity.z);	
 		}else{
-			var vel = new THREE.Vector3(velocity.x * Math.sin(player.rotation.y), 0, velocity.z * Math.cos(player.rotation.y));
+			var vel = new THREE.Vector3(velocity.x * Math.sin(player.rotation.y + kot), velocity.y, velocity.z * Math.cos(player.rotation.y + kot));
+			console.log("velx: "+velocity.x * Math.sin(player.rotation.y + kot) +
+				"vely: " + velocity.y +
+				"velz: " +  velocity.z * Math.cos(player.rotation.y - kot))
 			// console.log(velocity.x * Math.cos(player.rotation.y), 0, velocity.z * Math.sin(player.rotation.));
 			player.setLinearVelocity(vel);
 		}
