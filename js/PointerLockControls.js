@@ -325,7 +325,7 @@ THREE.PointerLockControls = function ( camera ) {
 		// yawObject.translateZ( velocity.z * delta );
 		
 		yawObject.position.x = player.position.x;
-		yawObject.position.y = player.position.y;
+		yawObject.position.y = player.position.y + 15;
 		yawObject.position.z = player.position.z;
 
 		prevTime = time;

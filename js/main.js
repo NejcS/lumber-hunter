@@ -3,13 +3,16 @@ var keyboard = new THREEx.KeyboardState();
 var clock = new THREE.Clock();
 var controls;
 var isPaused = true;
+var prevTime = performance.now();
 
 var objects = [];
 var cube;
 var MovingCube;
 
 var numberOfTrees = 2;
+var numberOfAnimals = 10;
 var trees = [];
+var animals = [];
 
 Physijs.scripts.worker = 'js/physijs_worker.js';
 Physijs.scripts.ammo = 'ammo.js';
@@ -142,7 +145,8 @@ function init() {
 	ground.receiveShadow = true;
 	scene.add( ground );
 	
-	addTrees( ground_geometry );	
+	addTrees( ground_geometry );
+	addAnimals( ground_geometry );
 }
 
 function addTrees( ground ) {
@@ -156,17 +160,50 @@ function addTrees( ground ) {
 			var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
 			material.visible = false;
 			var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );	
-			
+			cylinder.add( object );
+			object.scale.set(3.0, 3.0, 3.0);
+
 			var rand = Math.floor( Math.random() * ground.vertices.length );
 			var treePosition = ground.vertices[ rand ];
 			console.log(treePosition.x + " " + treePosition.y + " " + treePosition.z);
 			console.log(ground.vertices[rand].x + " " +ground.vertices[rand].y + " " +ground.vertices[rand].z);
 
-			cylinder.position.x = treePosition.x; 	cylinder.position.y = treePosition.z - 5;	cylinder.position.z = treePosition.y;
-			cylinder.add( object );
+			cylinder.position.x = treePosition.x; 	cylinder.position.y = treePosition.z;	cylinder.position.z = treePosition.y;
+
 			scene.add( cylinder );
 
-			trees.push( cylinder )
+			trees.push( cylinder );
+		});
+	}
+}
+
+
+function addAnimals( ground ) {
+	var loader = new THREE.OBJMTLLoader();
+	
+	for (var i = 0; i < numberOfAnimals; i++ ) {
+
+		loader.load( 'images/Rabbit.obj', 'images/Rabbit.mtl', function ( object ) {
+
+			var geometry = new THREE.BoxGeometry( 15, 5, 15 );
+			var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
+			material.visible = true;
+			var box = new Physijs.BoxMesh( geometry, material, 10 );	
+			box.add( object );
+			object.scale.set(12.0, 12.0, 12.0);
+
+			var rand = Math.floor( Math.random() * ground.vertices.length );
+			var animalPosition = ground.vertices[ rand ];
+			console.log(animalPosition.x + " " + animalPosition.y + " " + animalPosition.z);
+			// console.log(ground.vertices[rand].x + " " +ground.vertices[rand].y + " " +ground.vertices[rand].z);
+
+			box.position.x = animalPosition.x; 	box.position.y = animalPosition.z;	box.position.z = animalPosition.y;
+			// cylinder.position = controls.getPlayer().position;
+			// cylinder.position.y = 20;
+
+			scene.add( box );
+
+			animals.push( box );
 
 		});
 	}
@@ -192,7 +229,19 @@ function animate() {
 
 // game logic
 function update(){
+	var time = performance.now();
+	delta = ( time - prevTime ) / 1000;
+/*
+	animals.forEach(function( animal ) {
+		if (delta > 3) {
+			var direction = Math.random() > 0.5 ? "right" : "left";
 
+			if (direction == right) ani
+
+		}
+	});
+*/
+	prevTime = time;
 }
 
 function render() {
