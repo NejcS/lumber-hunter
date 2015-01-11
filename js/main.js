@@ -145,7 +145,25 @@ function init() {
 	scene.add( ground );
 	
 	scene.fog = new THREE.FogExp2( 0x999999, 0.00025 );
+	
+	var loader = new THREE.OBJMTLLoader();
+	loader.load( 'images/Tree.obj', 'images/Tree.mtl', function ( object ) {
+		var geometry = new THREE.CylinderGeometry( 3, 5, 200, 32 );
+		var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
+		var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );
 
+	// var playerGeometry = new THREE.SphereGeometry(7, 320, 320);
+	// var physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({ color: 0x0000ff }), friction, restitution);
+	// physMaterial.visible = true;
+
+	// var player = new Physijs.SphereMesh( playerGeometry, physMaterial, mass );
+
+		cylinder.add( object );
+
+		object.position.y = 0;
+		scene.add( cylinder );
+
+	});	
 	
 }
 
