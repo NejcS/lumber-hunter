@@ -77,7 +77,7 @@ function init() {
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
 	
 	scene = new Physijs.Scene({ fixedTimeStep: 1 / 120 });
-	scene.setGravity(new THREE.Vector3(0, -1000, 0));
+	scene.setGravity(new THREE.Vector3(0, -1500, 0));
 
 		
 	controls = new THREE.PointerLockControls( camera );
@@ -123,7 +123,7 @@ function init() {
 
 	ground_geometry = new THREE.PlaneGeometry( 1000, 1000, widthOfTerrain - 1, widthOfTerrain - 1 );
 
-	for (var i = 0; i < ground_geometry.vertices.length; i++ ) {
+	for ( var i = 0; i < ground_geometry.vertices.length; i++ ) {
 		ground_geometry.vertices[i].z = heightMap.map[i];
 	}
 
@@ -158,7 +158,7 @@ function init() {
 	// physMaterial.visible = true;
 
 	// var player = new Physijs.SphereMesh( playerGeometry, physMaterial, mass );
-
+		cylinder.position.x = 20;
 		cylinder.add( object );
 
 		object.position.y = 0;

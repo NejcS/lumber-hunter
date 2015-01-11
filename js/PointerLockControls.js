@@ -24,7 +24,7 @@ THREE.PointerLockControls = function ( camera ) {
 
 	var player = new Physijs.SphereMesh( playerGeometry, physMaterial, mass );
 
-	player.position.set( 0, 40, 0 );
+	player.position.set( 0, 50, 0 );
 
 	scene.add(player);
 
@@ -32,8 +32,11 @@ THREE.PointerLockControls = function ( camera ) {
 	var moveBackward = false;
 	var moveLeft = false;
 	var moveRight = false;
+	var jump = false;
 
-	var canJump = false;
+	var stillJumping = false;
+	var jumpTime;
+	var jumpVelocity = 0;
 
 	var prevTime = performance.now();
 
@@ -87,9 +90,11 @@ THREE.PointerLockControls = function ( camera ) {
 				break;
 
 			case 32: // space
-				// if ( canJump === true ) velocity.y += 1500;
+/*
 				var vektorJump = new THREE.Vector3(0, 5000, 0);
-				player.applyCentralImpulse(vektorJump);	
+				player.applyCentralImpulse(vektorJump);
+*/
+				jump = true;
 				break;
 		}
 
@@ -117,6 +122,9 @@ THREE.PointerLockControls = function ( camera ) {
 			case 39: // right
 			case 68: // d
 				moveRight = false;
+				break;
+			case 32:
+				jump = false;
 				break;
 		}
 	};
@@ -173,25 +181,32 @@ THREE.PointerLockControls = function ( camera ) {
 		player.rotation.y = yawObject.rotation.y;
 		player.rotation = yawObject.rotation;
 
-		// if(moveForward){
-			// velocity.z -= 400.0 * delta;
-			// velocity.x -= 400.0 * delta;
-		// }if(moveBackward){
-		// 	velocity.z += 400.0 * delta;
-		// 	velocity.x += 400.0 * delta;
-		// }if(moveRight){
-		// 	velocity.z -= 400.0 * delta; 
-		// 	velocity.x += 400.0 * delta; 
-		// }if(moveLeft){
-		// 	velocity.z += 400.0 * delta; 
-		// 	velocity.x -= 400.0 * delta; 
-		// }
 
 		var kot = 0;
-		if(moveForward || moveRight || moveBackward || moveLeft){
+		if( moveForward || moveRight || moveBackward || moveLeft ){
 			velocity.z -= 400.0 * delta;
 			velocity.x -= 400.0 * delta;
+		}
 
+		if ( jump ) {
+			jumpTime = time;
+			jumpVelocity = 40;
+			stillJumping = true;
+		}
+
+		if ( stillJumping ) {
+			var jumpDelta = (time - jumpTime) / 1000;
+
+			if ( jumpDelta < 0.25 ) {
+				jumpVelocity += 5;
+			} else if ( 0.25 < jumpDelta < 0.5) {
+				jumpVelocity -= 5;
+			} else if ( jumpDelta > 0.5 ) {
+				stillJumping = false;
+				jumpVelocity = -50;
+			}
+
+			jump = false;
 		}
 
 		if (moveForward && moveRight){
@@ -222,10 +237,10 @@ THREE.PointerLockControls = function ( camera ) {
 		// player.translateZ( velocity.z * delta );
 
 		// player.position.set(posX, posY, 1);
-		if(player.getLinearVelocity.y > 0.01){
+		if (player.getLinearVelocity.y > 0.01){
 			player.setLinearVelocity(velocity.x, player.getLinearVelocity.y, velocity.z);	
 		} else {
-			var vel = new THREE.Vector3(velocity.x * Math.sin(player.rotation.y + kot), 0, velocity.z * Math.cos(player.rotation.y + kot));
+			var vel = new THREE.Vector3(velocity.x * Math.sin(player.rotation.y + kot), jumpVelocity, velocity.z * Math.cos(player.rotation.y + kot));
 			player.setLinearVelocity(vel);
 		}
 
