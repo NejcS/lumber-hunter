@@ -122,7 +122,7 @@ function init() {
 	}
 
 	// vertex 544 is the in position 0, 0, z
-	//controls.setPlayerPosition( 0, 0, ground_geometry.vertices[ 544 ].z + 50 );
+	controls.setPlayerPosition( 0, 0, ground_geometry.vertices[ 544 ].z + 50 );
 
 	ground_geometry.computeFaceNormals();
 	ground_geometry.computeVertexNormals();

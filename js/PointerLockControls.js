@@ -1,5 +1,9 @@
 THREE.PointerLockControls = function ( camera ) {
 
+	var floor = function( x ) {
+		return Math.floor( x * 10 ) / 10
+	}
+
 	var scope = this;
 	camera.rotation.set( 0, 0, 0 );
 
@@ -84,11 +88,8 @@ THREE.PointerLockControls = function ( camera ) {
 
 			case 32: // space
 				// if ( canJump === true ) velocity.y += 1500;
-				if (canJump == true) {
-					var vektorJump = new THREE.Vector3(0,5000,0);
-					player.applyCentralImpulse(vektorJump);
-				}
-				canJump = false;
+				var vektorJump = new THREE.Vector3(0,5000,0);
+				player.applyCentralImpulse(vektorJump);	
 				break;
 		}
 
@@ -239,21 +240,12 @@ THREE.PointerLockControls = function ( camera ) {
 		// yawObject.translateX( velocity.x * delta );
 		// yawObject.translateY( velocity.y * delta ); 
 		// yawObject.translateZ( velocity.z * delta );
+		
+		console.log("yaw : " + floor(yawObject.position.x) + " " + floor(yawObject.position.y) + " " + floor(yawObject.position.z) + " player: " + floor(player.position.x) + " " + floor(player.position.y) + " " + floor(player.position.z));
 
 		yawObject.position.x = player.position.x;
 		yawObject.position.y = player.position.y;
 		yawObject.position.z = player.position.z;
-
-		if(yawObject.position.y > 10) {
-			canJump = false;
-		}
-		if ( yawObject.position.y < 10 ) {
-
-			velocity.y = 0;
-			yawObject.position.y = 10;
-
-			canJump = true;
-		}
 
 		prevTime = time;
 
