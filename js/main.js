@@ -2,6 +2,7 @@ var container, scene, camera, renderer, controls, stats;
 var keyboard = new THREEx.KeyboardState();
 var clock = new THREE.Clock();
 var controls;
+var isPaused = true;
 
 var objects = [];
 var cube;
@@ -23,12 +24,17 @@ if ( havePointerLock ) {
 			|| document.webkitPointerLockElement === element ) {
 			controls.enabled = true;
 			blocker.style.display = 'none';
+			
+			isPaused = false;
+			scene.onSimulationResume();
 		} else {
 			controls.enabled = false;
 			blocker.style.display = '-webkit-box';
 			blocker.style.display = '-moz-box';
 			blocker.style.display = 'box';
 			instructions.style.display = '';
+			
+			isPaused = true;
 		}
 	}
 	var pointerlockerror = function ( event ) {
@@ -122,7 +128,7 @@ function init() {
 	}
 
 	// vertex 544 is the in position 0, 0, z
-	controls.setPlayerPosition( 0, 0, ground_geometry.vertices[ 544 ].z + 50 );
+	// controls.setPlayerPosition( 0, 0, ground_geometry.vertices[ 544 ].z + 50 );
 
 	ground_geometry.computeFaceNormals();
 	ground_geometry.computeVertexNormals();
@@ -147,8 +153,11 @@ function animate() {
     requestAnimationFrame( animate );
 	render();
 	update();
-	scene.simulate();
-	controls.update();
+
+	if (!isPaused) {
+		scene.simulate();
+		controls.update();
+	}
 }
 
 // game logic
