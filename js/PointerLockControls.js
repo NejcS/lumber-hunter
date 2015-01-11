@@ -190,6 +190,11 @@ THREE.PointerLockControls = function ( camera ) {
 
 	this.update = function () {
 		if ( scope.enabled === false ) return;
+		// if ( !moveForward && !moveBackward && !moveLeft && !moveRight && !chop && !jump){
+		// 	velocity.x=0;
+		// 	velocity.y=0;
+		// 	velocity.z=0;
+		// }
 
 		var time = performance.now();
 		var delta = ( time - prevTime ) / 1000;

@@ -8,6 +8,7 @@ var objects = [];
 var cube;
 var MovingCube;
 
+var numberOfTrees = 5;
 var trees = [];
 
 Physijs.scripts.worker = 'js/physijs_worker.js';
@@ -148,6 +149,8 @@ function init() {
 	scene.add( ground );
 	
 	scene.fog = new THREE.FogExp2( 0x999999, 0.00025 );
+
+	addTrees( ground_geometry );
 	
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'images/Tree.obj', 'images/Tree.mtl', function ( object ) {
@@ -170,8 +173,28 @@ function init() {
 	});		
 }
 
-function addTree( ground ) {
+function addTrees( ground ) {
+	var loader = new THREE.OBJMTLLoader();
 	
+	for (var i = 0; i < numberOfTrees; i++ ){
+			
+		loader.load( 'images/Tree.obj', 'images/Tree.mtl', function ( object ) {
+
+			var geometry = new THREE.CylinderGeometry( 3, 5, 275, 32 );
+			var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
+			material.visible = true;
+			var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );	
+			
+			var treePosition = ground.vertices[ Math.floor( Math.random() * ground.vertices.length ) ];
+
+			cylinder.position.x = treePosition.x; 	cylinder.position.y = treePosition.z;	cylinder.position.z = treePosition.y;
+			cylinder.add( object );
+			scene.add( cylinder );
+
+			trees.push( cylinder )
+		});
+
+	}
 }
 
 
