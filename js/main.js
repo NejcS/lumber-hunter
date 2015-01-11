@@ -13,6 +13,7 @@ var numberOfTrees = 2;
 var numberOfAnimals = 10;
 var trees = [];
 var animals = [];
+var direction = "right";
 
 Physijs.scripts.worker = 'js/physijs_worker.js';
 Physijs.scripts.ammo = 'ammo.js';
@@ -165,9 +166,7 @@ function addTrees( ground ) {
 
 			var rand = Math.floor( Math.random() * ground.vertices.length );
 			var treePosition = ground.vertices[ rand ];
-			console.log(treePosition.x + " " + treePosition.y + " " + treePosition.z);
-			console.log(ground.vertices[rand].x + " " +ground.vertices[rand].y + " " +ground.vertices[rand].z);
-
+			
 			cylinder.position.x = treePosition.x; 	cylinder.position.y = treePosition.z;	cylinder.position.z = treePosition.y;
 
 			scene.add( cylinder );
@@ -187,14 +186,13 @@ function addAnimals( ground ) {
 
 			var geometry = new THREE.BoxGeometry( 15, 5, 15 );
 			var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
-			material.visible = true;
+			material.visible = false;
 			var box = new Physijs.BoxMesh( geometry, material, 10 );	
 			box.add( object );
 			object.scale.set(12.0, 12.0, 12.0);
 
 			var rand = Math.floor( Math.random() * ground.vertices.length );
 			var animalPosition = ground.vertices[ rand ];
-			console.log(animalPosition.x + " " + animalPosition.y + " " + animalPosition.z);
 			// console.log(ground.vertices[rand].x + " " +ground.vertices[rand].y + " " +ground.vertices[rand].z);
 
 			box.position.x = animalPosition.x; 	box.position.y = animalPosition.z;	box.position.z = animalPosition.y;
@@ -230,18 +228,35 @@ function animate() {
 // game logic
 function update(){
 	var time = performance.now();
+
 	delta = ( time - prevTime ) / 1000;
-/*
+
 	animals.forEach(function( animal ) {
-		if (delta > 3) {
-			var direction = Math.random() > 0.5 ? "right" : "left";
 
-			if (direction == right) ani
+		if ( delta > 4 ) {
+			direction = Math.random() > 0.5 ? "right" : "left";
 
+			if (direction == "right") animal.rotation.y += Math.PI/2;
+			if (direction == "left") animal.rotation.y -= Math.PI/2;
+			animal.__dirtyRotation = true;
+		}
+
+		if (delta < 4) {
+
+			rand = Math.random() * 4;
+
+			velx = (Math.random() * 200) - 100;
+			velz = (Math.random() * 200) - 100;
+			
+			var vel = new THREE.Vector3(velx, 0, velz)
+
+			animal.setLinearVelocity(vel);
 		}
 	});
-*/
-	prevTime = time;
+
+	if ( delta > 4 ) {
+		prevTime = time;
+	}
 }
 
 function render() {

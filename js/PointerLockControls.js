@@ -54,6 +54,8 @@ THREE.PointerLockControls = function ( camera ) {
 	var jumpVelocity = 0;
 
 	var treeRotation = null;
+	var animalPop = null;
+	var animalScale = 1.0;
 
 	var prevTime = performance.now();
 
@@ -242,8 +244,16 @@ THREE.PointerLockControls = function ( camera ) {
 						
 						if( distanceTrees < 20) {
 							
-							treeRotation = {"index": i, "time": performance.now()}	
+							treeRotation = {"index": i, "time": performance.now()};
 						} 
+					}
+
+					for (var i = 0; i < numberOfAnimals; i++){
+						var distanceAnimal = distance(animals[i].position, player.position);
+
+						if( distanceAnimal < 20){
+							animalPop = {"index": i, "time": performance.now()}	
+						}
 					}
 					zamah = true;
 				}
@@ -305,14 +315,24 @@ THREE.PointerLockControls = function ( camera ) {
 
 		if ( treeRotation != null ) {
 			delta = (time - treeRotation.time) / 1000;
-			//trees[i].rotation.z += Math.PI/2;
-			//trees[i].__dirtyRotation = true;
 			
 			if ( delta < 1.95 ) {
 				trees[ treeRotation.index ].rotation.z += 0.01;
 				trees[ treeRotation.index ].__dirtyRotation = true;
 			} else if ( delta > 1.95 ) {
 				treeRotation = null;
+			}
+		}
+
+	 	if ( animalPop != null ) {
+			delta = (time - animalPop.time) / 1000;
+			
+			if ( delta < 3.95 ) {
+				animalScale += 0.02;
+				animals[ animalPop.index ].scale.set(animalScale, animalScale, animalScale);
+			} else if ( delta > 3.95 ) {
+				animalScale = null;
+				animals[ animalPop.index ].visible = false;
 			}
 		}
 
