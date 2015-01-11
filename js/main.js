@@ -150,50 +150,30 @@ function init() {
 	
 	scene.fog = new THREE.FogExp2( 0x999999, 0.00025 );
 
-	addTrees( ground_geometry );
-	
-	var loader = new THREE.OBJMTLLoader();
-	loader.load( 'images/Tree.obj', 'images/Tree.mtl', function ( object ) {
-		var geometry = new THREE.CylinderGeometry( 3, 5, 275, 32 );
-		var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
-		material.visible = false;
-		var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );
-
-	// var playerGeometry = new THREE.SphereGeometry(7, 320, 320);
-	// var physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({ color: 0x0000ff }), friction, restitution);
-	// physMaterial.visible = true;
-
-	// var player = new Physijs.SphereMesh( playerGeometry, physMaterial, mass );
-		cylinder.position.x = 0;
-		cylinder.add( object );
-
-		object.position.x = 0;
-		scene.add( cylinder );
-
-	});		
+	addTrees( ground_geometry );	
 }
 
 function addTrees( ground ) {
 	var loader = new THREE.OBJMTLLoader();
 	
-	for (var i = 0; i < numberOfTrees; i++ ){
-			
+	for (var i = 0; i < numberOfTrees; i++ ) {
+
 		loader.load( 'images/Tree.obj', 'images/Tree.mtl', function ( object ) {
 
 			var geometry = new THREE.CylinderGeometry( 3, 5, 275, 32 );
 			var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
-			material.visible = true;
+			material.visible = false;
 			var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );	
 			
 			var treePosition = ground.vertices[ Math.floor( Math.random() * ground.vertices.length ) ];
 
-			cylinder.position.x = treePosition.x; 	cylinder.position.y = treePosition.z;	cylinder.position.z = treePosition.y;
+			cylinder.position.x = treePosition.x; 	cylinder.position.y = treePosition.z - 5;	cylinder.position.z = treePosition.y;
 			cylinder.add( object );
 			scene.add( cylinder );
 
 			trees.push( cylinder )
-		});
 
+		});
 	}
 }
 

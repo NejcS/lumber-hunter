@@ -20,7 +20,7 @@ THREE.PointerLockControls = function ( camera ) {
 	//var playerGeometry = new THREE.CylinderGeometry( 5, 5, 10, 32 );
 	var playerGeometry = new THREE.SphereGeometry(7, 320, 320);
 	var physMaterial = new Physijs.createMaterial( new THREE.MeshBasicMaterial({ color: 0x0000ff }), friction, restitution );
-	physMaterial.visible = true;
+	physMaterial.visible = false;
 
 	var player = new Physijs.SphereMesh( playerGeometry, physMaterial, mass );
 
@@ -225,7 +225,7 @@ THREE.PointerLockControls = function ( camera ) {
 				if(yawObject.children[1].rotation.z > 1){
 					zamah = false;
 				}
-			}else{
+			} else {
 				yawObject.children[1].rotation.z -= 0.08;
 				if(yawObject.children[1].rotation.z < -0.8){
 					document.getElementById('axe_chop').load();
