@@ -8,7 +8,7 @@ var objects = [];
 var cube;
 var MovingCube;
 
-var car = {};
+var trees = [];
 
 Physijs.scripts.worker = 'js/physijs_worker.js';
 Physijs.scripts.ammo = 'ammo.js';
@@ -126,7 +126,7 @@ function init() {
 	for ( var i = 0; i < ground_geometry.vertices.length; i++ ) {
 		ground_geometry.vertices[i].z = heightMap.map[i];
 	}
-	
+
 	// vertex 544 is the in position 0, 0, z
 	controls.setPlayerPosition( 0, ground_geometry.vertices[ 544 ].z + 40, 0 );
 
@@ -139,7 +139,6 @@ function init() {
 			0 // mass
 		);
 
-	//ground.position.y = -0.5;
 	ground.rotation.x = Math.PI / -2;
 	ground.receiveShadow = true;
 	scene.add( ground );
@@ -164,9 +163,14 @@ function init() {
 		object.position.x = 0;
 		scene.add( cylinder );
 
-	});	
+	});		
+}
+
+function addTree( ground ) {
 	
 }
+
+
 
 function animate() {
     requestAnimationFrame( animate );

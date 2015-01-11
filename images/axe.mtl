@@ -12,5 +12,5 @@ newmtl Axe_Tomahawk_MAT
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\4\MeatPacking_B1_Static\Texture2D\Weapons_Axe_Tomahawk_D.tga
-	map_Kd C:\4\MeatPacking_B1_Static\Texture2D\Weapons_Axe_Tomahawk_D.tga
+	map_Ka Weapons_Axe_Tomahawk_D.png
+	map_Kd Weapons_Axe_Tomahawk_D.png
