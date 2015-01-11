@@ -126,9 +126,9 @@ function init() {
 	for ( var i = 0; i < ground_geometry.vertices.length; i++ ) {
 		ground_geometry.vertices[i].z = heightMap.map[i];
 	}
-
+	
 	// vertex 544 is the in position 0, 0, z
-	// controls.setPlayerPosition( 0, 0, ground_geometry.vertices[ 544 ].z + 50 );
+	controls.setPlayerPosition( 0, ground_geometry.vertices[ 544 ].z + 40, 0 );
 
 	ground_geometry.computeFaceNormals();
 	ground_geometry.computeVertexNormals();
@@ -158,10 +158,10 @@ function init() {
 	// physMaterial.visible = true;
 
 	// var player = new Physijs.SphereMesh( playerGeometry, physMaterial, mass );
-		cylinder.position.x = 20;
+		cylinder.position.x = 0;
 		cylinder.add( object );
 
-		object.position.y = 0;
+		object.position.x = 0;
 		scene.add( cylinder );
 
 	});	

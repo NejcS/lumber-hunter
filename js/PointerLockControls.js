@@ -19,14 +19,27 @@ THREE.PointerLockControls = function ( camera ) {
 
 	//var playerGeometry = new THREE.CylinderGeometry( 5, 5, 10, 32 );
 	var playerGeometry = new THREE.SphereGeometry(7, 320, 320);
-	var physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({ color: 0x0000ff }), friction, restitution);
+	var physMaterial = new Physijs.createMaterial( new THREE.MeshBasicMaterial({ color: 0x0000ff }), friction, restitution );
 	physMaterial.visible = true;
 
 	var player = new Physijs.SphereMesh( playerGeometry, physMaterial, mass );
 
-	player.position.set( 0, 50, 0 );
+	var loader = new THREE.OBJMTLLoader();
+	loader.load( 'images/axe.obj', 'images/axe.mtl', function ( object ) {
 
-	scene.add(player);
+		object.position.y = -1; // -15 gor dol
+		object.position.x = 2; // 10 desno
+		object.position.z = 0; // -10 stran naprej
+
+		object.scale.set(0.1, 0.1, 0.1);
+
+		object.rotation.y = 2;
+		object.rotation.x = -1;
+		
+		yawObject.add( object );
+	});
+
+	//scene.add(player);
 
 	var moveForward = false;
 	var moveBackward = false;
@@ -149,6 +162,7 @@ THREE.PointerLockControls = function ( camera ) {
 		player.position.x = x;
 		player.position.y = y;
 		player.position.z = z;
+		scene.add(player);
 	}
 
 	this.getDirection = function() {
@@ -213,18 +227,18 @@ THREE.PointerLockControls = function ( camera ) {
 			kot -= 45 * Math.PI/180;
 		} else if(moveForward && moveLeft) {
 			kot += 45 * Math.PI/180;
-		}else if(moveBackward && moveRight) {
+		} else if(moveBackward && moveRight) {
 			kot -= 135 * Math.PI/180;
-		}else if(moveBackward && moveLeft) {
+		} else if(moveBackward && moveLeft) {
 			kot += 135 * Math.PI/180;
 		}//---------//
 		else if(moveRight) {
 			kot -= 90 * Math.PI/180;
-		}else if(moveLeft) {
+		} else if(moveLeft) {
 			kot += 90 * Math.PI/180;
-		}else if(moveForward) {
+		} else if(moveForward) {
 			kot += 0 * Math.PI/180;
-		}else if(moveBackward) {
+		} else if(moveBackward) {
 			kot += 180 * Math.PI/180;
 		}
 
