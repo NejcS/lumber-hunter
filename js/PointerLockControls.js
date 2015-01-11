@@ -230,12 +230,24 @@ THREE.PointerLockControls = function ( camera ) {
 				if(yawObject.children[1].rotation.z < -0.8){
 					document.getElementById('axe_chop').load();
 					document.getElementById('axe_chop').play();
+					
+					for (var i = 0; i < numberOfTrees; i++) { 
+						var distanceTrees = distance(trees[i].position, player.position);
+						console.log("Dist: " + distanceTrees);
+						if( distanceTrees < 20){
+							// trees[i].visible = false;
+							console.log(trees[i].rotation.y);
+							trees[i].rotation.z += Math.PI/2;
+							trees[i].__dirtyRotation = true;
+							console.log(trees[i].rotation.y);
+						} 
+					}
 					zamah = true;
 				}
 			}
 
 			
-			console.log(yawObject.children[1].rotation.z + " " + zamah);
+			// console.log(yawObject.children[1].rotation.z + " " + zamah);
 		}
 
 		if ( stillJumping ) {

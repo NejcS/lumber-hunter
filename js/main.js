@@ -8,7 +8,7 @@ var objects = [];
 var cube;
 var MovingCube;
 
-var numberOfTrees = 5;
+var numberOfTrees = 2;
 var trees = [];
 
 Physijs.scripts.worker = 'js/physijs_worker.js';
@@ -165,7 +165,10 @@ function addTrees( ground ) {
 			material.visible = false;
 			var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );	
 			
-			var treePosition = ground.vertices[ Math.floor( Math.random() * ground.vertices.length ) ];
+			var rand = Math.floor( Math.random() * ground.vertices.length );
+			var treePosition = ground.vertices[ rand ];
+			console.log(treePosition.x + " " + treePosition.y + " " + treePosition.z);
+			console.log(ground.vertices[rand].x + " " +ground.vertices[rand].y + " " +ground.vertices[rand].z);
 
 			cylinder.position.x = treePosition.x; 	cylinder.position.y = treePosition.z - 5;	cylinder.position.z = treePosition.y;
 			cylinder.add( object );
@@ -177,7 +180,12 @@ function addTrees( ground ) {
 	}
 }
 
+function distance( p1, p2 ) {
+	dx = p1.x - p2.x;
+	dz = p1.z - p2.z;
 
+	return Math.sqrt(dx*dx + dz*dz);
+}
 
 function animate() {
     requestAnimationFrame( animate );
