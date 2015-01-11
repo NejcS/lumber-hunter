@@ -91,25 +91,19 @@ function init() {
 	document.body.appendChild( renderer.domElement );
 
 
-	
+
 	// create a light
 	var light = new THREE.PointLight(0xffffff);
 	light.position.set(0,250,0);
 	scene.add(light);
-	
-	var hemiLight = new THREE.HemisphereLight( 0xd3d3d3, 0xd3d3d3, 0.6 ); 
+
+	// argumenti po vrsti: skyColor, groundColor, intensity (0 - 1)
+	var hemiLight = new THREE.HemisphereLight( 0x999999, 0x777788, 0.5 ); 
 	scene.add( hemiLight );
 
 
-	var light = new THREE.AmbientLight( 0x101010 );
-	scene.add(light);
-/*	
-	// note: 4x4 checkboard pattern scaled so that each square is 25 by 25 pixels.
-	var floorTexture = new THREE.ImageUtils.loadTexture( 'images/grass1.jpg' );
-
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 10, 10 );
-*/
+	// argumenti po vrsti: color, near, far
+	scene.fog = new THREE.FogExp2( 0x999999, 0.005 );
 
 	ground_material = Physijs.createMaterial(
 			new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture( 'images/grass1.jpg' ) }),
@@ -148,8 +142,6 @@ function init() {
 	ground.receiveShadow = true;
 	scene.add( ground );
 	
-	scene.fog = new THREE.FogExp2( 0x999999, 0.00025 );
-
 	addTrees( ground_geometry );	
 }
 

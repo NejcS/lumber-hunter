@@ -53,6 +53,8 @@ THREE.PointerLockControls = function ( camera ) {
 	var jumpTime;
 	var jumpVelocity = 0;
 
+	var treeRotation = null;
+
 	var prevTime = performance.now();
 
 	var velocity = new THREE.Vector3();
@@ -84,9 +86,6 @@ THREE.PointerLockControls = function ( camera ) {
 		//player.applyForce( {x: 5, y: 5, z: 0}, {x: 0, y: 0, z: 0} );
 
 		switch ( event.keyCode ) {
-			case 17://ctrl
-				chop = true;
-				break;
 			case 38: // up
 			case 87: // w
 				moveForward = true;
@@ -120,9 +119,6 @@ THREE.PointerLockControls = function ( camera ) {
 	var onKeyUp = function ( event ) {
 
 		switch( event.keyCode ) {
-			case 17://ctrl
-				chop = false;
-				break;
 			case 38: // up
 			case 87: // w
 				moveForward = false;
@@ -148,7 +144,17 @@ THREE.PointerLockControls = function ( camera ) {
 		}
 	};
 
+	var onMouseDown = function ( event ) {
+		chop = true;
+	};
+
+	var onMouseUp = function ( event ) {
+		chop = false;
+	};
+
 	document.addEventListener( 'mousemove', onMouseMove, false );
+	document.addEventListener( 'mousedown', onMouseDown, false );
+	document.addEventListener( 'mouseup', onMouseUp, false );
 	document.addEventListener( 'keydown', onKeyDown, false );
 	document.addEventListener( 'keyup', onKeyUp, false );
 
@@ -233,13 +239,10 @@ THREE.PointerLockControls = function ( camera ) {
 					
 					for (var i = 0; i < numberOfTrees; i++) { 
 						var distanceTrees = distance(trees[i].position, player.position);
-						console.log("Dist: " + distanceTrees);
-						if( distanceTrees < 20){
-							// trees[i].visible = false;
-							console.log(trees[i].rotation.y);
-							trees[i].rotation.z += Math.PI/2;
-							trees[i].__dirtyRotation = true;
-							console.log(trees[i].rotation.y);
+						
+						if( distanceTrees < 20) {
+							
+							treeRotation = {"index": i, "time": performance.now()}	
 						} 
 					}
 					zamah = true;
@@ -293,11 +296,24 @@ THREE.PointerLockControls = function ( camera ) {
 		// player.translateZ( velocity.z * delta );
 
 		// player.position.set(posX, posY, 1);
-		if (player.getLinearVelocity.y > 0.01){
+		if ( player.getLinearVelocity.y > 0.01 ){
 			player.setLinearVelocity(velocity.x, player.getLinearVelocity.y, velocity.z);	
 		} else {
 			var vel = new THREE.Vector3(velocity.x * Math.sin(player.rotation.y + kot), jumpVelocity, velocity.z * Math.cos(player.rotation.y + kot));
 			player.setLinearVelocity(vel);
+		}
+
+		if ( treeRotation != null ) {
+			delta = (time - treeRotation.time) / 1000;
+			//trees[i].rotation.z += Math.PI/2;
+			//trees[i].__dirtyRotation = true;
+			
+			if ( delta < 1.95 ) {
+				trees[ treeRotation.index ].rotation.z += 0.01;
+				trees[ treeRotation.index ].__dirtyRotation = true;
+			} else if ( delta > 1.95 ) {
+				treeRotation = null;
+			}
 		}
 
 		// player.matrixAutoUpdate = false;
