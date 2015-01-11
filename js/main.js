@@ -95,6 +95,10 @@ function init() {
 	var light = new THREE.PointLight(0xffffff);
 	light.position.set(0,250,0);
 	scene.add(light);
+	
+	var hemiLight = new THREE.HemisphereLight( 0xd3d3d3, 0xd3d3d3, 0.6 ); 
+	scene.add( hemiLight );
+
 
 	var light = new THREE.AmbientLight( 0x101010 );
 	scene.add(light);

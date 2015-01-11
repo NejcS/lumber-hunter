@@ -46,6 +46,8 @@ THREE.PointerLockControls = function ( camera ) {
 	var moveLeft = false;
 	var moveRight = false;
 	var jump = false;
+	var chop = false;
+	var zamah = true; //gremo gor
 
 	var stillJumping = false;
 	var jumpTime;
@@ -82,7 +84,9 @@ THREE.PointerLockControls = function ( camera ) {
 		//player.applyForce( {x: 5, y: 5, z: 0}, {x: 0, y: 0, z: 0} );
 
 		switch ( event.keyCode ) {
-
+			case 17://ctrl
+				chop = true;
+				break;
 			case 38: // up
 			case 87: // w
 				moveForward = true;
@@ -116,7 +120,9 @@ THREE.PointerLockControls = function ( camera ) {
 	var onKeyUp = function ( event ) {
 
 		switch( event.keyCode ) {
-
+			case 17://ctrl
+				chop = false;
+				break;
 			case 38: // up
 			case 87: // w
 				moveForward = false;
@@ -206,6 +212,25 @@ THREE.PointerLockControls = function ( camera ) {
 			jumpTime = time;
 			jumpVelocity = 40;
 			stillJumping = true;
+		}
+
+		if ( chop ) {
+			if(zamah == true){
+				yawObject.children[1].rotation.z += 0.02;
+				if(yawObject.children[1].rotation.z > 1){
+					zamah = false;
+				}
+			}else{
+				yawObject.children[1].rotation.z -= 0.08;
+				if(yawObject.children[1].rotation.z < -0.8){
+					document.getElementById('axe_chop').load();
+					document.getElementById('axe_chop').play();
+					zamah = true;
+				}
+			}
+
+			
+			console.log(yawObject.children[1].rotation.z + " " + zamah);
 		}
 
 		if ( stillJumping ) {
