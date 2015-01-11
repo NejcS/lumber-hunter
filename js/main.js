@@ -148,8 +148,9 @@ function init() {
 	
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'images/Tree.obj', 'images/Tree.mtl', function ( object ) {
-		var geometry = new THREE.CylinderGeometry( 3, 5, 200, 32 );
+		var geometry = new THREE.CylinderGeometry( 3, 5, 275, 32 );
 		var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
+		material.visible = false;
 		var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );
 
 	// var playerGeometry = new THREE.SphereGeometry(7, 320, 320);
