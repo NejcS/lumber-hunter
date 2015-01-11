@@ -14,6 +14,7 @@ var numberOfAnimals = 10;
 var trees = [];
 var animals = [];
 var direction = "right";
+var moveAnimal = false;
 
 Physijs.scripts.worker = 'js/physijs_worker.js';
 Physijs.scripts.ammo = 'ammo.js';
@@ -242,7 +243,6 @@ function update(){
 		}
 
 		if (delta < 4) {
-
 			rand = Math.random() * 4;
 
 			velx = (Math.random() * 200) - 100;
@@ -250,12 +250,19 @@ function update(){
 			
 			var vel = new THREE.Vector3(velx, 0, velz)
 
-			animal.setLinearVelocity(vel);
+			if ( moveAnimal == false ) {
+				animal.setLinearVelocity(vel);
+			}
 		}
 	});
 
 	if ( delta > 4 ) {
+		moveAnimal = false;
 		prevTime = time;
+	}
+
+	if ( delta < 4 ) {
+		moveAnimal = true;
 	}
 }
 
