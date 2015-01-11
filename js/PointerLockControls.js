@@ -7,27 +7,22 @@ THREE.PointerLockControls = function ( camera ) {
 	pitchObject.add( camera );
 
 	var yawObject = new THREE.Object3D();
-	yawObject.position.y = 10;
 	yawObject.add( pitchObject );
 
 	var friction = 1;
 	var restitution = 0;
 	var mass = 10;
-	var playerMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-	var playerGeometry = new THREE.CylinderGeometry( 5, 5, 10, 32 );
-	// var playerGeometry = new THREE.SphereGeometry(7, 320, 320);
-	var physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({}), friction, restitution);
-	physMaterial.visible = false;
-	var player = new Physijs.CapsuleMesh( playerGeometry, physMaterial, mass );
-	// var player = new Physijs.SphereMesh(playerGeometry, physMaterial, mass);
-    // player.__dirtyPosition = true;
-    // player.__dirtyRotation = true;
 
-	player.position.set( 10, 8, 0 );
+	//var playerGeometry = new THREE.CylinderGeometry( 5, 5, 10, 32 );
+	var playerGeometry = new THREE.SphereGeometry(7, 320, 320);
+	var physMaterial = new Physijs.createMaterial(new THREE.MeshBasicMaterial({ color: 0x0000ff }), friction, restitution);
+	physMaterial.visible = true;
+
+	var player = new Physijs.SphereMesh( playerGeometry, physMaterial, mass );
+
+	player.position.set( 0, 0, 100 );
 
 	scene.add(player);
-
-	//yawObject.add(player);
 
 	var moveForward = false;
 	var moveBackward = false;
@@ -51,7 +46,6 @@ THREE.PointerLockControls = function ( camera ) {
 
 		yawObject.rotation.y -= movementX * 0.002;
 		pitchObject.rotation.x -= movementY * 0.002;
-		player.rotation.y -= movementX * 0.002;
 		
 		// var yAxis = new THREE.Vector3(0,1,0);
 		// rotateAroundObjectAxis(player, yAxis, player.rotation.y);
@@ -144,6 +138,12 @@ THREE.PointerLockControls = function ( camera ) {
 		return player;
 	};
 
+	this.setPlayerPosition = function(x, y, z) {
+		player.position.x = x;
+		player.position.y = y;
+		player.position.z = z;
+	}
+
 	this.getDirection = function() {
 
 		// assumes the camera itself is not rotated
@@ -164,7 +164,6 @@ THREE.PointerLockControls = function ( camera ) {
 	}();
 
 	this.update = function () {
-
 		if ( scope.enabled === false ) return;
 
 		var time = performance.now();
@@ -198,29 +197,22 @@ THREE.PointerLockControls = function ( camera ) {
 
 		}
 
-		if(moveForward && moveRight){
+		if (moveForward && moveRight){
 			kot -= 45 * Math.PI/180;
-		}else 
-		if(moveForward && moveLeft){
+		} else if(moveForward && moveLeft) {
 			kot += 45 * Math.PI/180;
-		}else
-		if(moveBackward && moveRight){
+		}else if(moveBackward && moveRight) {
 			kot -= 135 * Math.PI/180;
-		}else
-		if(moveBackward && moveLeft){
+		}else if(moveBackward && moveLeft) {
 			kot += 135 * Math.PI/180;
-		}//---------
-		else
-		if(moveRight){
+		}//---------//
+		else if(moveRight) {
 			kot -= 90 * Math.PI/180;
-		}else
-		if(moveLeft){
+		}else if(moveLeft) {
 			kot += 90 * Math.PI/180;
-		}else
-		if(moveForward){
+		}else if(moveForward) {
 			kot += 0 * Math.PI/180;
-		}else
-		if(moveBackward){
+		}else if(moveBackward) {
 			kot += 180 * Math.PI/180;
 		}
 
@@ -235,17 +227,12 @@ THREE.PointerLockControls = function ( camera ) {
 		// player.position.set(posX, posY, 1);
 		if(player.getLinearVelocity.y > 0.01){
 			player.setLinearVelocity(velocity.x, player.getLinearVelocity.y, velocity.z);	
-		}else{
+		} else {
 			var vel = new THREE.Vector3(velocity.x * Math.sin(player.rotation.y + kot), 0, velocity.z * Math.cos(player.rotation.y + kot));
-			console.log("velx: "+velocity.x * Math.sin(player.rotation.y + kot) +
-				"vely: " + velocity.y +
-				"velz: " +  velocity.z * Math.cos(player.rotation.y - kot))
-			// console.log(velocity.x * Math.cos(player.rotation.y), 0, velocity.z * Math.sin(player.rotation.));
 			player.setLinearVelocity(vel);
 		}
 
 		// player.matrixAutoUpdate = false;
-		console.log(player.rotation.y);
 
 		// player.applyCentralImpulse( new THREE.Vector3(silaPremik.x, silaPremik.y, velocity.z) );
 
@@ -257,7 +244,6 @@ THREE.PointerLockControls = function ( camera ) {
 		yawObject.position.y = player.position.y;
 		yawObject.position.z = player.position.z;
 
-		// console.log(player.position.y, yawObject.position.y);
 		if(yawObject.position.y > 10) {
 			canJump = false;
 		}

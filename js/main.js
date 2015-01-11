@@ -100,9 +100,6 @@ function init() {
 	floorTexture.repeat.set( 10, 10 );
 */
 
-
-
-
 	ground_material = Physijs.createMaterial(
 			new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture( 'images/grass1.jpg' ) }),
 			.6, // high friction
@@ -112,13 +109,20 @@ function init() {
 	ground_material.map.wrapS = ground_material.map.wrapT = THREE.RepeatWrapping;
 	ground_material.map.repeat.set( 10, 10 );
 
-	ground_geometry = new THREE.PlaneGeometry( 1000, 1000, 50, 50 );
+	var groundDetail = 5;
+	var widthOfTerrain = Math.pow(2, groundDetail) + 1;
+
+	var heightMap = new Terrain( groundDetail );
+	heightMap.generate(1);
+
+	ground_geometry = new THREE.PlaneGeometry( 1000, 1000, widthOfTerrain - 1, widthOfTerrain - 1 );
 
 	for (var i = 0; i < ground_geometry.vertices.length; i++ ) {
-		if (i % 40 == 0) {
-			ground_geometry.vertices[i].z = (Math.random() * 5) + 5;
-		}
+		ground_geometry.vertices[i].z = heightMap.map[i];
 	}
+
+	// vertex 544 is the in position 0, 0, z
+	//controls.setPlayerPosition( 0, 0, ground_geometry.vertices[ 544 ].z + 50 );
 
 	ground_geometry.computeFaceNormals();
 	ground_geometry.computeVertexNormals();
@@ -126,9 +130,7 @@ function init() {
 	ground = new Physijs.HeightfieldMesh(
 			ground_geometry,
 			ground_material,
-			0, // mass
-			50,
-			50
+			0 // mass
 		);
 
 	//ground.position.y = -0.5;
