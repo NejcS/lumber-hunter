@@ -243,7 +243,7 @@ THREE.PointerLockControls = function ( camera ) {
 						var distanceTrees = distance(trees[i].position, player.position);
 						
 						if( distanceTrees < 20) {
-							
+							console.log(trees[i].position.x + " " + trees[i].position.y + " " + trees[i].position.z + " player: " + player.position.x + " " + player.position.y + " " + player.position.z);
 							treeRotation = {"index": i, "time": performance.now()};
 						} 
 					}

@@ -9,7 +9,7 @@ var objects = [];
 var cube;
 var MovingCube;
 
-var numberOfTrees = 40;
+var numberOfTrees = 20;
 var numberOfAnimals = 40;
 var trees = [];
 var animals = [];
@@ -132,10 +132,12 @@ function init() {
 	}
 
 	// vertex 544 is the in position 0, 0, z
-	controls.setPlayerPosition( 0, ground_geometry.vertices[ 544 ].z + 40, 0 );
+	controls.setPlayerPosition( ground_geometry.vertices[ 544 ].x, ground_geometry.vertices[ 544 ].y + 10, ground_geometry.vertices[ 544 ].z );
 
-	ground_geometry.computeFaceNormals();
-	ground_geometry.computeVertexNormals();
+	// ground_geometry.computeFaceNormals();
+	// ground_geometry.computeVertexNormals();
+	ground_material.visible = true;
+    ground_geometry.uvsNeedUpdate = true;
 
 	ground = new Physijs.HeightfieldMesh(
 			ground_geometry,
@@ -143,12 +145,43 @@ function init() {
 			0 // mass
 		);
 
-	ground.rotation.x = Math.PI / -2;
+
+	// ground.rotation.x = Math.PI / -2;
+	ground.rotation.set(Math.PI/-2, 0, 0);
+	ground.updateMatrix(); 
+	ground.geometry.applyMatrix( ground.matrix );
+	ground.matrix.identity();
+	// ground.geometry.verticesNeedUpdate = true;
+	// ground.position.set( 0, 0, 0 );
+	// ground.rotation.set( 0, 0, 0 );
+	// ground.scale.set( 1, 1, 1 );
+
+
+
+	// ground.rotation.x = Math.PI / 2;
 	ground.receiveShadow = true;
+	ground.geometry.computeVertexNormals();
+	ground.geometry.computeFaceNormals();
 	scene.add( ground );
-	
-	addTrees( ground_geometry );
-	addAnimals( ground_geometry );
+// -------------------------------------------------------------------------
+// PIN CYLINDERS TO VERTEXES -----------------------------------------------
+// -------------------------------------------------------------------------
+	for ( var i = 0; i < ground.geometry.vertices.length; i++){
+		var geometry = new THREE.CylinderGeometry( 3, 5, 6, 32 );
+		var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
+		material.visible = true;
+		var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );	
+			
+		cylinder.position.x = ground.geometry.vertices[i].x;
+		cylinder.position.y = ground.geometry.vertices[i].y;
+		cylinder.position.z = ground.geometry.vertices[i].z;
+
+		scene.add( cylinder );
+	}
+// -------------------------------------------------------------------------
+// -------------------------------------------------------------------------
+	addTrees( ground );
+	addAnimals( ground );
 }
 
 function addTrees( ground ) {
@@ -160,15 +193,18 @@ function addTrees( ground ) {
 
 			var geometry = new THREE.CylinderGeometry( 3, 5, 275, 32 );
 			var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
-			material.visible = false;
+			material.visible = true;
 			var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );	
 			cylinder.add( object );
 			object.scale.set(3.0, 3.0, 3.0);
 
-			var rand = Math.floor( Math.random() * ground.vertices.length );
-			var treePosition = ground.vertices[ rand ];
-			
-			cylinder.position.x = treePosition.x; 	cylinder.position.y = treePosition.z;	cylinder.position.z = treePosition.y;
+			var rand = Math.floor( Math.random() * ground.geometry.vertices.length );
+			var treePosition = ground.geometry.vertices[ rand ];
+			console.log(treePosition.x + " " + treePosition.y + " " + treePosition.z + " ground " + ground.geometry.vertices[rand].x + " " + ground.geometry.vertices[rand].y + " " + ground.geometry.vertices[rand].z);
+
+			cylinder.position.x = ground.geometry.vertices[rand].x;
+			cylinder.position.y = ground.geometry.vertices[rand].y;
+			cylinder.position.z = ground.geometry.vertices[rand].z;
 
 			scene.add( cylinder );
 
@@ -192,11 +228,11 @@ function addAnimals( ground ) {
 			box.add( object );
 			object.scale.set(12.0, 12.0, 12.0);
 
-			var rand = Math.floor( Math.random() * ground.vertices.length );
-			var animalPosition = ground.vertices[ rand ];
+			var rand = Math.floor( Math.random() * ground.geometry.vertices.length );
+			var animalPosition = ground.geometry.vertices[ rand ];
 			// console.log(ground.vertices[rand].x + " " +ground.vertices[rand].y + " " +ground.vertices[rand].z);
 
-			box.position.x = animalPosition.x; 	box.position.y = animalPosition.z;	box.position.z = animalPosition.y;
+			box.position.x = animalPosition.x; 	box.position.y = animalPosition.y + 5;	box.position.z = animalPosition.z;
 			// cylinder.position = controls.getPlayer().position;
 			// cylinder.position.y = 20;
 
