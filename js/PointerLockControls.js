@@ -330,7 +330,10 @@ THREE.PointerLockControls = function ( camera ) {
 			if ( delta < 3.95 ) {
 				animalScale += 0.02;
 				animals[ animalPop.index ].scale.set(animalScale, animalScale, animalScale);
-			} else if ( delta > 3.95 ) {
+			} else if ( delta > 3.95 && delta < 4.1) {
+				animalScale -=0.5;
+				animals[ animalPop.index ].scale.set(animalScale, animalScale, animalScale);
+			} else {
 				animalScale = null;
 				animals[ animalPop.index ].visible = false;
 			}

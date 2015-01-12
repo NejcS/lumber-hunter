@@ -9,8 +9,8 @@ var objects = [];
 var cube;
 var MovingCube;
 
-var numberOfTrees = 2;
-var numberOfAnimals = 10;
+var numberOfTrees = 40;
+var numberOfAnimals = 40;
 var trees = [];
 var animals = [];
 var direction = "right";
@@ -156,7 +156,7 @@ function addTrees( ground ) {
 	
 	for (var i = 0; i < numberOfTrees; i++ ) {
 
-		loader.load( 'images/Tree.obj', 'images/Tree.mtl', function ( object ) {
+		loader.load( 'images/tree2.obj', 'images/tree2.mtl', function ( object ) {
 
 			var geometry = new THREE.CylinderGeometry( 3, 5, 275, 32 );
 			var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
