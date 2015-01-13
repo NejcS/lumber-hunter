@@ -15,13 +15,14 @@ THREE.PointerLockControls = function ( camera ) {
 
 	var friction = 1;
 	var restitution = 0;
-	var mass = 10;
+	var mass = 5;
 
-	//var playerGeometry = new THREE.CylinderGeometry( 5, 5, 10, 32 );
+	// var playerGeometry = new THREE.CylinderGeometry( 5, 5, 10, 32 );
 	var playerGeometry = new THREE.SphereGeometry(7, 320, 320);
 	var physMaterial = new Physijs.createMaterial( new THREE.MeshBasicMaterial({ color: 0x0000ff }), friction, restitution );
 	physMaterial.visible = false;
 
+	// var player = new Physijs.CylinderMesh( playerGeometry, physMaterial, mass );
 	var player = new Physijs.SphereMesh( playerGeometry, physMaterial, mass );
 
 	var loader = new THREE.OBJMTLLoader();
@@ -48,6 +49,7 @@ THREE.PointerLockControls = function ( camera ) {
 	var jump = false;
 	var chop = false;
 	var zamah = true; //gremo gor
+	var resetirajPozicijo = false;
 
 	var stillJumping = false;
 	var jumpTime;
@@ -88,6 +90,7 @@ THREE.PointerLockControls = function ( camera ) {
 		//player.applyForce( {x: 5, y: 5, z: 0}, {x: 0, y: 0, z: 0} );
 
 		switch ( event.keyCode ) {
+
 			case 38: // up
 			case 87: // w
 				moveForward = true;
@@ -217,8 +220,8 @@ THREE.PointerLockControls = function ( camera ) {
 
 		var kot = 0;
 		if( moveForward || moveRight || moveBackward || moveLeft ){
-			velocity.z -= 400.0 * delta;
-			velocity.x -= 400.0 * delta;
+			velocity.z -= 800.0 * delta;
+			velocity.x -= 800.0 * delta;
 		}
 
 		if ( jump ) {

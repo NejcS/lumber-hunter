@@ -83,9 +83,12 @@ function init() {
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
 	
 	scene = new Physijs.Scene({ fixedTimeStep: 1 / 120 });
+	scene.addEventListener( 'update', function() {
+    // the scene's physics have finished updating
+
+	});
 	scene.setGravity(new THREE.Vector3(0, -1500, 0));
 
-		
 	controls = new THREE.PointerLockControls( camera );
 	scene.add( controls.getObject() );
 	raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
@@ -130,58 +133,127 @@ function init() {
 	for ( var i = 0; i < ground_geometry.vertices.length; i++ ) {
 		ground_geometry.vertices[i].z = heightMap.map[i];
 	}
-
+console.log(ground_geometry);
 	// vertex 544 is the in position 0, 0, z
-	controls.setPlayerPosition( ground_geometry.vertices[ 544 ].x, ground_geometry.vertices[ 544 ].y + 10, ground_geometry.vertices[ 544 ].z );
+	controls.setPlayerPosition( ground_geometry.vertices[ 544 ].x, ground_geometry.vertices[ 544 ].y + 100, ground_geometry.vertices[ 544 ].z );
 
 	// ground_geometry.computeFaceNormals();
 	// ground_geometry.computeVertexNormals();
 	ground_material.visible = true;
     ground_geometry.uvsNeedUpdate = true;
 
-	ground = new Physijs.HeightfieldMesh(
+	var rotWorldMatrix;
+	var xAxis = new THREE.Vector3(1,0,0);
+	var radians = - Math.PI / 2;
+	rotWorldMatrix = new THREE.Matrix4();
+    rotWorldMatrix.makeRotationAxis(xAxis.normalize(), radians);
+
+    ground_geometry.applyMatrix(rotWorldMatrix)
+    ground_geometry.computeVertexNormals();
+    ground_geometry.computeFaceNormals();
+
+	// rotWorldMatrix.multiply(ground.matrix); 
+	// ground.matrix = rotWorldMatrix;
+	// ground.rotation.setFromRotationMatrix(ground.matrix);
+	// ground.updateMatrix();
+	// ground.geometry.verticesNeedUpdate = true;
+	// ground.geometry.applyMatrix( ground.matrix );
+	// // console.log(ground.matrix.elements);
+	// ground.material.needsUpdate = true;
+ //    ground.geometry.uvsNeedUpdate = true;
+
+	ground = new Physijs.ConcaveMesh(
 			ground_geometry,
 			ground_material,
-			0 // mass
-		);
+			0, // mass
+			widthOfTerrain - 1,
+			widthOfTerrain - 1
 
+		);
+	rotWorldMatrix.makeRotationAxis(xAxis.normalize(), Math.PI);
+	rotWorldMatrix.multiply(ground.matrix);
+	ground.matrix = rotWorldMatrix;
+
+
+// 	var rotWorldMatrix;
+// 	var xAxis = new THREE.Vector3(1,0,0);
+// 	var radians = Math.PI / -2;
+// // rotateAroundWorldAxis(mesh, xAxis, Math.PI / 180);
+// //obj, axis, radians
+// 	rotWorldMatrix = new THREE.Matrix4();
+// // ground.__dirtyRotation = true;
+// // ground.__dirtyPosition = true;
+
+//     rotWorldMatrix.makeRotationAxis(xAxis.normalize(), radians);
+// 	rotWorldMatrix.multiply(ground.matrix); 
+// 	ground.matrix = rotWorldMatrix;
+// 	ground.rotation.setFromRotationMatrix(ground.matrix);
+// 	ground.updateMatrix();
+// 	ground.geometry.verticesNeedUpdate = true;
+// 	ground.geometry.applyMatrix( ground.matrix );
+// 	// console.log(ground.matrix.elements);
+// 	ground.material.needsUpdate = true;
+//     ground.geometry.uvsNeedUpdate = true;
 
 	// ground.rotation.x = Math.PI / -2;
-	ground.rotation.set(Math.PI/-2, 0, 0);
-	ground.updateMatrix(); 
-	ground.geometry.applyMatrix( ground.matrix );
-	ground.matrix.identity();
+	//....
+	// ground.rotation.set(Math.PI/-2, 0, 0);
+	// ground.updateMatrix(); 
+	// ground.geometry.applyMatrix( ground.matrix );
+	// ground.matrix.identity();
 	// ground.geometry.verticesNeedUpdate = true;
+	//.....
 	// ground.position.set( 0, 0, 0 );
 	// ground.rotation.set( 0, 0, 0 );
 	// ground.scale.set( 1, 1, 1 );
 
-
+	// ground.material.needsUpdate = true;
+	
+	// ground = new Physijs.HeightfieldMesh(
+	// 		ground.geometry,
+	// 		ground_material,
+	// 		0 // mass
+	// 	);
 
 	// ground.rotation.x = Math.PI / 2;
 	ground.receiveShadow = true;
 	ground.geometry.computeVertexNormals();
 	ground.geometry.computeFaceNormals();
-	scene.add( ground );
+	ground.material.side = THREE.DoubleSide;
+
+	// ground2 = new Physijs.HeightfieldMesh(
+	// 	ground.geometry,
+	// 	ground_material,
+	// 	0
+	// 	);
+
+	// ground2.add( ground );
 // -------------------------------------------------------------------------
 // PIN CYLINDERS TO VERTEXES -----------------------------------------------
 // -------------------------------------------------------------------------
-	for ( var i = 0; i < ground.geometry.vertices.length; i++){
-		var geometry = new THREE.CylinderGeometry( 3, 5, 6, 32 );
-		var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
-		material.visible = true;
-		var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );	
+	// for ( var i = 0; i < ground.geometry.vertices.length; i++){
+	// 	var geometry = new THREE.CylinderGeometry( 3, 5, 6, 32 );
+	// 	var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
+	// 	material.visible = true;
+	// 	var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );	
 			
-		cylinder.position.x = ground.geometry.vertices[i].x;
-		cylinder.position.y = ground.geometry.vertices[i].y;
-		cylinder.position.z = ground.geometry.vertices[i].z;
+	// 	cylinder.position.x = ground.geometry.vertices[i].x;
+	// 	cylinder.position.y = ground.geometry.vertices[i].y;
+	// 	cylinder.position.z = ground.geometry.vertices[i].z;
 
-		scene.add( cylinder );
-	}
+	// 	scene.add( cylinder );
+	// }
 // -------------------------------------------------------------------------
 // -------------------------------------------------------------------------
+
+	console.log(ground.geometry.faceVertexUvs, ground.geometry);
+	scene.add(ground);
+	// ground.rotation.x = Math.PI / 2;
+	// ground.geometry.computeVertexNormals();
+	// ground.geometry.computeFaceNormals();
 	addTrees( ground );
 	addAnimals( ground );
+
 }
 
 function addTrees( ground ) {
@@ -193,7 +265,7 @@ function addTrees( ground ) {
 
 			var geometry = new THREE.CylinderGeometry( 3, 5, 275, 32 );
 			var material = new Physijs.createMaterial(new THREE.MeshBasicMaterial( {color: 0xffff00} ), 1, 1);
-			material.visible = true;
+			material.visible = false;
 			var cylinder = new Physijs.CylinderMesh( geometry, material, 0 );	
 			cylinder.add( object );
 			object.scale.set(3.0, 3.0, 3.0);
